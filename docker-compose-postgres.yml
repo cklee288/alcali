@@ -1,0 +1,53 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: salt
+      POSTGRES_USER: alcali
+      POSTGRES_PASSWORD: alcali
+    volumes:
+      - ./docker/sql/postgres:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+  web:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile-postgre-dev
+      args:
+        USER_ID: ${USER_ID:-1000}
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/opt/alcali/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - env.test
+  master:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile-postgre-master
+    command: honcho start
+    depends_on:
+      - web
+    environment:
+      - PYTHONUNBUFFERED=true
+    ports:
+      - "8080:8080"
+  minion:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile-minion
+    command: salt-minion -l info
+    depends_on:
+      - master
+  ldap-server:
+    image: osixia/openldap:1.3.0
+    restart: always
+    ports:
+      - "389:389"
+      - "636:636"

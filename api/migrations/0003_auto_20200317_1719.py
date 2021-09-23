@@ -10,6 +10,11 @@ with open(
 ) as fh:
     data = json.load(fh)
 
+with open(
+    os.path.join(Path(__file__).parent.absolute(), "alcali_permission.json"), "r"
+) as fh1:
+    data1 = fh1.read()
+
 
 class Migration(migrations.Migration):
 
@@ -20,6 +25,11 @@ class Migration(migrations.Migration):
         migrations.RemoveField(model_name="usersettings", name="notifs_event"),
         migrations.RemoveField(model_name="usersettings", name="notifs_published"),
         migrations.RemoveField(model_name="usersettings", name="notifs_returned"),
+        migrations.AddField(
+            model_name="usersettings",
+            name="alcali_permissions",
+            field=models.TextField(default=data1),
+        ),
         migrations.AddField(
             model_name="usersettings",
             name="settings",

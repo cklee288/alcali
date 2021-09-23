@@ -266,6 +266,13 @@ class UserSettings(models.Model):
         "r",
     ) as fh:
         data = json.load(fh)
+
+    with open(
+        os.path.join(Path(__file__).parent.absolute(), "migrations/alcali_permission.json"),
+        "r",
+    ) as fh1:
+        data1 = fh1.read()
+
     user = models.OneToOneField(
         User, primary_key=True, related_name="user_settings", on_delete=models.CASCADE
     )
@@ -273,6 +280,8 @@ class UserSettings(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     settings = models.JSONField(default=data)
     salt_permissions = models.TextField()
+    # CK create new data columns
+    alcali_permissions = models.TextField(default=data1)
 
     def generate_token(self):
         self.token = generate_key()
