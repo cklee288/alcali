@@ -538,11 +538,9 @@ def verify(request):
         except User.DoesNotExist:
             return HttpResponse("Unauthorized", status=401)
         if request.POST.get("password") == user.user_settings.token:
-            # return Response([".*","@runner","@wheel"])
+            # return Response([".*","@runner","@wheel"]) ## to respond permision json back to saltstack
             data=json.loads(user.user_settings.alcali_permissions)
-            # return JsonResponse(data)
             return Response(data)
-            # return Response({ user.user_settings.alcali_permissions })
         return HttpResponse("Unauthorized", status=401)
 
 

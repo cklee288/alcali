@@ -1,5 +1,10 @@
 version: '3'
 
+networks: 
+  default: 
+    external: 
+      name: external-example
+
 services:
   db:
     image: mariadb
@@ -19,16 +24,16 @@ services:
     ports:
       - "389:389"
       - "636:636"
-  phpldapadmin:
-    image: osixia/phpldapadmin:latest
-    # container_name: phpldapadmin
-    environment:
-      PHPLDAPADMIN_LDAP_HOSTS: "ldap-server"
-      PHPLDAPADMIN_HTTPS: "false"
-    ports:
-      - "8081:80"
-    depends_on:
-      - ldap-server
+  # phpldapadmin:
+  #   image: osixia/phpldapadmin:latest
+  #   # container_name: phpldapadmin
+  #   environment:
+  #     PHPLDAPADMIN_LDAP_HOSTS: "ldap-server"
+  #     PHPLDAPADMIN_HTTPS: "false"
+  #   ports:
+  #     - "8081:80"
+  #   depends_on:
+  #     - ldap-server
   web:
     build:
       context: .
